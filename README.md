@@ -21,7 +21,29 @@
 
 Install using npm:
 
-```bash
+`````bash
 npm install geezify
 
-```
+
+````yarn
+yarn add geezify
+
+
+
+
+usage
+
+
+`````
+
+import { geez, arabic } from 'geezify';
+
+export default function App() {
+return (
+
+<div>
+<p>Geez of 15: {geez(15)}</p> {/_ ፲፭ _/}
+<p>Arabic of ፴፯: {arabic('፴፯')}</p> {/_ 37 _/}
+</div>
+);
+}
