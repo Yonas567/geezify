@@ -1,0 +1,23 @@
+{
+  "name": "geezify",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "repository":{
+    "url":"https://github.com/Yonas567/geezify.git"
+  },
+  "scripts": {
+    "build": "tsup"
+  },
+  "keywords": [
+    "geez-number-converter"
+  ],
+  "author": "yonas-debru",
+  "license": "ISC",
+  "description": "A lightweight JavaScript/React package for converting numbers between Arabic numerals (1, 2, 3...) and Geez numerals (፩, ፪, ፫...).",
+  "devDependencies": {
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
+  }
+}
