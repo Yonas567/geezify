@@ -2,7 +2,7 @@
 
 **geezify** is a lightweight JavaScript/React-compatible package that lets you convert numbers between **Arabic numerals (1, 2, 3...)** and **Geez numerals (፩, ፪, ፫...)**.
 
-> Supports conversions from 1 to 100. Ideal for Ethiopian heritage projects, calendars, education tools, or language learning apps.
+> Supports conversions from 1 to 10 powers of 15. Ideal for Ethiopian heritage projects, calendars, education tools, or language learning apps.
 
 ---
 
