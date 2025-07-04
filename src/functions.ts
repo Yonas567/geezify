@@ -1,53 +1,88 @@
 // src/function.ts
 
-const arabicToGeezMap: Record<number, string> = {
-  1: "፩",
-  2: "፪",
-  3: "፫",
-  4: "፬",
-  5: "፭",
-  6: "፮",
-  7: "፯",
-  8: "፰",
-  9: "፱",
-  10: "፲",
-  20: "፳",
-  30: "፴",
-  40: "፵",
-  50: "፶",
-  60: "፷",
-  70: "፸",
-  80: "፹",
-  90: "፺",
-  100: "፻",
-};
+var thousands = ['፻፼፼፼', '፼፼፼', '፻፼፼', '፼፼', '፻፼', '፼', '፻', ''];
+var ones = ['፩', '፪', '፫', '፬', '፭', '፮', '፯', '፰', '፱'];
+var tens = ['፲', '፳', '፴', '፵', '፶', '፷', '፸', '፹', '፺'];
 
-const geezToArabicMap = Object.entries(arabicToGeezMap).reduce(
-  (acc, [key, value]) => {
-    acc[value] = parseInt(key);
-    return acc;
-  },
-  {} as Record<string, number>
-);
+var base_elf = ['፻', '፼'];
 
 /**
- * Convert Arabic number (1–100) to Geez numerals.
+ * Convert Arabic number (1 – 1e15) to Geez numerals.
  */
 export function arabicToGeez(num: number): string {
-  if (num < 1 || num > 100) return "Not Supported Yet";
-  if (num === 100) return arabicToGeezMap[100];
-  const tens = Math.floor(num / 10) * 10;
-  const ones = num % 10;
-  return (arabicToGeezMap[tens] || "") + (arabicToGeezMap[ones] || "");
+  const numStr = num.toString();
+  const chunks = Math.ceil(numStr.length / 2);
+  let temp = numStr;
+  let geezNum = '';
+
+  for (let i = 1; i <= chunks; i++) {
+    const mul = i === 1 ? '' : base_elf[1].repeat(Math.floor((i - 2) / 2)) + (i % 2 === 0 ? base_elf[0] : '');
+    const num1 = temp.slice(-1);
+    const num2 = temp.length > 1 ? temp.slice(-2, -1) : '0';
+
+    if (num1 !== '0' || num2 !== '0') {
+      geezNum += mul;
+      if (!(i > 1 && num2 === '0' && num1 === '1')) {
+        if (num1 !== '0') geezNum += ones[parseInt(num1) - 1];
+      }
+      if (num2 !== '0') geezNum += tens[parseInt(num2) - 1];
+    }
+
+    temp = temp.slice(0, -2);
+  }
+
+  return geezNum.split('').reverse().join('');
 }
 
 /**
- * Convert Geez numeral string (፩–፻) to Arabic number.
+ * Convert Geez numeral string to Arabic number.
  */
 export function geezToArabic(geez: string): number {
-  return geez
-    .split("")
-    .reduce((sum, ch) => sum + (geezToArabicMap[ch] || 0), 0);
+  let converted = 0;
+  let powers = 14;
+  let multiplier = 10 ** powers;
+
+  for (let i = 0; i < thousands.length; i++) {
+    if (!geez.includes(thousands[i])) {
+      powers -= 2;
+      multiplier = 10 ** powers;
+      continue;
+    }
+
+    const splitIndex = geez.indexOf(thousands[i]) + thousands[i].length;
+    const segment = geez.slice(0, splitIndex - thousands[i].length);
+    geez = geez.slice(splitIndex);
+
+    if (segment.length === 2) {
+      converted += (((tens.indexOf(segment[1]) + 1) * 10) + (ones.indexOf(segment[0]) + 1)) * multiplier;
+    } else if (segment.length === 1) {
+      const ch = segment[0];
+      if (ones.includes(ch)) {
+        converted += (ones.indexOf(ch) + 1) * multiplier;
+      } else if (tens.includes(ch)) {
+        converted += (tens.indexOf(ch) + 1) * 10 * multiplier;
+      }
+    } else if (segment.length === 0) {
+      converted += multiplier;
+    }
+
+    powers -= 2;
+    multiplier = 10 ** powers;
+  }
+
+  // Remaining digits (1–99)
+  if (geez.length === 2) {
+    converted += ((tens.indexOf(geez[0]) + 1) * 10) + (ones.indexOf(geez[1]) + 1);
+  } else if (geez.length === 1) {
+    const ch = geez[0];
+    if (ones.includes(ch)) {
+      converted += ones.indexOf(ch) + 1;
+    } else if (tens.includes(ch)) {
+      converted += (tens.indexOf(ch) + 1) * 10;
+    }
+  }
+
+  return converted;
 }
 
 /**
