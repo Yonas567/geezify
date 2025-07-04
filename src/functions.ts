@@ -16,7 +16,7 @@ export function arabicToGeez(num: number): string {
   let geezNum = '';
 
   for (let i = 1; i <= chunks; i++) {
-    const mul = i === 1 ? '' : base_elf[1].repeat(Math.floor((i - 2) / 2)) + (i % 2 === 0 ? base_elf[0] : '');
+    const mul = i === 1 ? '' : base_elf[1].repeat(Math.ceil((i - 2) / 2)) + (i % 2 === 0 ? base_elf[0] : '');
     const num1 = temp.slice(-1);
     const num2 = temp.length > 1 ? temp.slice(-2, -1) : '0';
 
